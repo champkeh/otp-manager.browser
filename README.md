@@ -10,7 +10,7 @@ npm run build
 ```
 
 ### 2. 打开 Chrome 的插件列表界面
-<a href="chrome://extensions/" target="_blank">chrome://extensions/</a>
+[chrome://extensions/](chrome://extensions/)
 
 开启右上角的 **开发者模式**
 
