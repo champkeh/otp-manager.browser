@@ -11,7 +11,7 @@
   <form @submit.prevent="onAdd">
     <p class="flex-row">
       <label for="account">账户:</label>
-      <input class="flex-1" id="account" type="text" v-model="name" placeholder="请输入账号" required autocomplete="off">
+      <input class="flex-1" id="account" type="text" v-focus v-model="name" placeholder="请输入账号" required autocomplete="off">
     </p>
     <p class="flex-row">
       <label for="secret">密钥:</label>
@@ -19,8 +19,8 @@
     </p>
     <div class="flex-row">
       <select v-model="type">
-        <option value="time">基于时间</option>
-        <option value="counter">基于计数器</option>
+        <option value="totp">基于时间</option>
+        <option value="hotp">基于计数器</option>
       </select>
       <div>
         <button class="btn" @click.prevent="inspectStorage">检查storage</button>
@@ -36,10 +36,12 @@ import {ref} from 'vue'
 import {v4 as uuid} from 'uuid'
 import {genCode} from '@/utils/totp'
 import {AccountInStorage, AccountType} from '@/index'
+import vFocus from '@/directives/vFocus'
+import {decodeQrCode, parseSchema} from '@/utils/file'
 
 const name = ref('')
 const secret = ref('')
-const type = ref<AccountType>('time')
+const type = ref<AccountType>('totp')
 const accounts = ref<AccountInStorage[]>([])
 chrome.storage.sync.get('accounts', (data) => {
   accounts.value = data.accounts || []
@@ -65,7 +67,7 @@ async function onAdd() {
   await sync(accounts._rawValue as AccountInStorage[])
   name.value = ''
   secret.value = ''
-  type.value = 'time'
+  type.value = 'totp'
 }
 
 /**
@@ -91,11 +93,38 @@ async function inspectStorage() {
   console.log(value)
 }
 
+let fileEl: HTMLInputElement | null = null
+
 /**
  * 加载二维码
  */
 function loadQRCode() {
-  // todo
+  if (!fileEl) {
+    fileEl = document.createElement('input')
+    fileEl.type = 'file'
+    fileEl.accept = 'image/*'
+    fileEl.style.visibility = 'hidden'
+    fileEl.style.width = '0'
+    fileEl.style.height = '0'
+    document.body.appendChild(fileEl)
+    fileEl.addEventListener('change', (event) => {
+      const file = (event.target as HTMLInputElement).files![0]
+      if (file) {
+        decodeQrCode(file).then(parseSchema).then(res => {
+          console.log(res)
+          name.value = res.account
+          secret.value = res.secret
+          type.value = res.type
+        }).catch(e => {
+          alert(e.message)
+        }).finally(() => {
+          (event.target as HTMLInputElement).value = ''
+        })
+      }
+    })
+  }
+
+  fileEl.click()
 }
 
 </script>

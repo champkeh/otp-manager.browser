@@ -6,7 +6,7 @@ export interface Account {
     countdown: number
 }
 
-export type AccountType = 'time' | 'counter'
+export type AccountType = 'totp' | 'hotp'
 
 export interface AccountInStorage {
     id: string

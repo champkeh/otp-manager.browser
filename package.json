@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^0.27.2",
+    "jsqr": "^1.4.0",
     "uuid": "^8.3.2",
     "vue": "^3.2.25"
   },

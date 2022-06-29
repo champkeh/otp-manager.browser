@@ -10,5 +10,8 @@
   "options_page": "/src/options/entry.html",
   "permissions": [
     "storage"
+  ],
+  "host_permissions": [
+    "https://cli.im/apis/"
   ]
 }

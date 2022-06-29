@@ -8,6 +8,7 @@
       </div>
       <div v-if="account.countdown !== null" class="timer">{{account.countdown}}s</div>
     </li>
+    <li class="empty" v-if="accounts.length === 0">暂无账户~</li>
   </ul>
   <form v-else class="login" @submit.prevent="onSubmit">
     <p>请输入密码进行访问:</p>
@@ -38,13 +39,20 @@ function countdown() {
   return 30 - Math.floor(Date.now() / 1000 % 30)
 }
 
+function formatCode(code: string): string {
+  if (!code || code.length !== 6) {
+    return code
+  }
+  return code.slice(0, 3) + ' ' + code.slice(3)
+}
+
 /**
  * 刷新code
  */
 function refreshCode() {
   const c = countdown()
   accounts.value.forEach(account => {
-    account.code = genCode(account.secret)
+    account.code = formatCode(genCode(account.secret))
     account.countdown = c
   })
 }
@@ -57,11 +65,11 @@ async function enable() {
   enabled.value = true
 
   const data = await chrome.storage.sync.get('accounts')
-  accounts.value = data.accounts.map((a: AccountInStorage) => ({
+  accounts.value = (data.accounts || []).map((a: AccountInStorage) => ({
     code: '',
     countdown: 0,
     ...a,
-  })) || []
+  }))
 
   refreshCode()
   setInterval(() => {
@@ -85,6 +93,11 @@ h1 {
   text-align: center;
   margin-bottom: 30px;
 }
+@font-face {
+  font-family: 'Space';
+  src: local('Times New Roman');
+  unicode-range: U+20;
+}
 .item {
   display: flex;
   align-items: flex-end;
@@ -98,7 +111,7 @@ h1 {
   }
   .code {
     font-size: 34px;
-    font-family: Monaco, serif;
+    font-family: Space, Monaco, serif;
   }
   .timer {
     font-size: 24px;
@@ -110,6 +123,12 @@ h1 {
       transition: color .3s;
     }
   }
+}
+.empty {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-size: 18px;
 }
 button.add {
   position: fixed;
