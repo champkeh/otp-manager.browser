@@ -23,7 +23,7 @@
         <option value="hotp">基于计数器</option>
       </select>
       <div>
-        <button class="btn" @click.prevent="inspectStorage">检查storage</button>
+<!--        <button class="btn" @click.prevent="inspectStorage">检查storage</button>-->
         <button class="btn" @click.prevent="loadQRCode">二维码</button>
         <button class="btn">添加</button>
       </div>
