@@ -1,0 +1,14 @@
+{
+  "name": "authenticator",
+  "manifest_version": 3,
+  "version": "1.0",
+  "description": "Authenticator",
+  "action": {
+    "default_popup": "/src/popup/entry.html",
+    "default_title": "Authenticator"
+  },
+  "options_page": "/src/options/entry.html",
+  "permissions": [
+    "storage"
+  ]
+}
