@@ -12,6 +12,6 @@
     "storage"
   ],
   "host_permissions": [
-    "https://cli.im/apis/"
+    "https://*/"
   ]
 }

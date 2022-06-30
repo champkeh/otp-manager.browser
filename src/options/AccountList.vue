@@ -33,8 +33,21 @@ h2 {
 ul {
   font-size: 18px;
 }
+.account {
+  display: flex;
+  align-items: flex-end;
+  height: 30px;
+
+  &:hover {
+    button.text {
+      display: initial;
+    }
+  }
+}
 button.text {
+  display: none;
   color: blueviolet;
   background-color: transparent;
+  margin-left: 10px;
 }
 </style>

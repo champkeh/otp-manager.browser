@@ -34,8 +34,9 @@ function save() {
 <style lang="scss" scoped>
 h2 {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   font-size: 24px;
+  margin-top: 30px;
 }
 form {
   label {

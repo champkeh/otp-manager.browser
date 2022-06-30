@@ -1,4 +1,5 @@
 <template>
+  <h2>添加账户</h2>
   <form @submit.prevent="onAdd">
     <p class="flex-row">
       <label for="account">账户:</label>
@@ -15,26 +16,37 @@
         <option value="hotp">基于计数器</option>
       </select>
       <div>
-<!--        <button class="btn" @click.prevent="inspectStorage">检查storage</button>-->
-        <button class="btn" @click.prevent="loadQRCode">二维码</button>
         <button class="btn">添加</button>
       </div>
     </div>
+  </form>
+  <div class="divider"><span>OR</span></div>
+  <form @submit.prevent="fetchQRCode">
+    <p class="flex-row">
+      <input class="flex-1" id="qrcode" type="url" v-select v-model="url" placeholder="请输入在线二维码地址" required autocomplete="off">
+      <button class="btn" :disabled="loading">提取在线二维码</button>
+      <button class="btn" @click.prevent="loadQRCode">本地二维码</button>
+    </p>
   </form>
 </template>
 
 <script lang="ts" setup>
 import vFocus from '@/directives/vFocus'
+import vSelect from '@/directives/vSelect'
 import {useAccountStore} from '@/stores/AccountStore'
 import {ref} from "vue"
 import {AccountType} from "@/index"
 import {decodeQrCodeLocal, parseSchema} from '@/utils/qrcode'
+import {download} from '@/utils/http'
 
 const accountStore = useAccountStore()
 
 const name = ref('')
 const secret = ref('')
 const type = ref<AccountType>('totp')
+const url = ref('')
+
+const loading = ref(false)
 
 /**
  * 新增账户
@@ -48,18 +60,12 @@ async function onAdd() {
     alert(e.message)
   })
 }
-/**
- * 检查storage
- */
-async function inspectStorage() {
-  const value = await chrome.storage.sync.get()
-  console.log(value)
-}
+
 
 let fileEl: HTMLInputElement | null = null
 
 /**
- * 加载二维码
+ * 加载本地二维码
  */
 function loadQRCode() {
   if (!fileEl) {
@@ -93,9 +99,39 @@ function loadQRCode() {
   fileEl.click()
 }
 
+/**
+ * 解析远程二维码
+ */
+function fetchQRCode() {
+  loading.value = true
+  download(url.value).then(file => {
+    const reader = new FileReader()
+    reader.onloadend = (evt) => {
+      decodeQrCodeLocal(evt.target!.result as string).then(parseSchema).then(res => {
+        if (res) {
+          name.value = res.account
+          secret.value = res.secret!
+          type.value = res.type
+        }
+      }).catch(e => {
+        alert(e.message)
+      })
+    }
+    reader.readAsDataURL(file)
+  }).finally(() => {
+    loading.value = false
+  })
+}
+
 </script>
 
 <style lang="scss" scoped>
+h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 24px;
+  margin-top: 30px;
+}
 label {
   font-size: 18px;
   margin-right: 30px;
@@ -118,7 +154,35 @@ input {
 }
 
 form {
-  margin-top: 30px;
+  margin-top: 20px;
+}
+
+.divider {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20px;
+  font-size: 20px;
+  margin-bottom: 20px;
+
+  &::before {
+    position: absolute;
+    content: "";
+    width: 50%;
+    height: 1px;
+    background-color: blueviolet;
+    display: block;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 10px;
+  }
+
+  span {
+    padding: 0 20px;
+    background-color: white;
+    z-index: 10;
+  }
 }
 
 button.btn {
@@ -139,10 +203,15 @@ button.btn {
     color: white;
     background-color: blueviolet;
   }
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.3;
+  }
 }
 
 select {
   color: blueviolet;
   padding: .75em;
+  font-size: 16px;
 }
 </style>
