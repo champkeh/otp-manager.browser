@@ -1,5 +1,7 @@
 lockfileVersion: 5.4
 
+patchedDependencies: {}
+
 specifiers:
   '@types/chrome': ^0.0.191
   '@types/node': ^18.0.0

@@ -10,6 +10,7 @@ export default defineConfig({
         }
     },
     build: {
+        sourcemap: true,
         rollupOptions: {
             input: {
                 popup: resolve(__dirname, '/src/popup/entry.html'),

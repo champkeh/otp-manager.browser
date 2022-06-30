@@ -12,4 +12,14 @@ declare module 'uuid' {
     export {v4}
 }
 
+interface JimpRes {
+    bitmap: {
+        data: any,
+        width: number
+        height: number
+    }
+}
 
+declare const Jimp: {
+    read(data: string): Promise<JimpRes>
+}

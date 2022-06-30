@@ -28,7 +28,7 @@ import vFocus from '@/directives/vFocus'
 import {useAccountStore} from '@/stores/AccountStore'
 import {ref} from "vue"
 import {AccountType} from "@/index"
-import {decodeQrCode, parseSchema} from '@/utils/file'
+import {decodeQrCodeLocal, parseSchema} from '@/utils/qrcode'
 
 const accountStore = useAccountStore()
 
@@ -73,16 +73,19 @@ function loadQRCode() {
     fileEl.addEventListener('change', (event) => {
       const file = (event.target as HTMLInputElement).files![0]
       if (file) {
-        decodeQrCode(file).then(parseSchema).then(res => {
-          console.log(res)
-          name.value = res.account
-          secret.value = res.secret
-          type.value = res.type
-        }).catch(e => {
-          alert(e.message)
-        }).finally(() => {
-          (event.target as HTMLInputElement).value = ''
-        })
+        const reader = new FileReader()
+        reader.onloadend = (evt) => {
+          decodeQrCodeLocal(evt.target!.result as string).then(parseSchema).then(res => {
+            if (res) {
+              name.value = res.account
+              secret.value = res.secret!
+              type.value = res.type
+            }
+          }).catch(e => {
+            alert(e.message)
+          })
+        }
+        reader.readAsDataURL(file)
       }
     })
   }
