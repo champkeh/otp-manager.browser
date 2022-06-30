@@ -5,7 +5,7 @@
   "description": "Authenticator",
   "action": {
     "default_popup": "/src/popup/entry.html",
-    "default_title": "Authenticator",
+    "default_title": "运行在 Chrome 插件平台的 Authenticator",
     "default_icon": {
       "16": "icons/icon.png",
       "24": "icons/icon.png",
