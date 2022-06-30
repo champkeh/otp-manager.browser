@@ -3,14 +3,14 @@
   <ul v-if="enabled">
     <li class="item" :class="{warning: account.countdown <= 3}" v-for="account in accounts" :key="account.id">
       <div>
-        <p class="account">{{account.name}}</p>
-        <p class="code">{{account.code}}</p>
+        <p class="account">{{ account.name }}</p>
+        <p class="code">{{ account.code }}</p>
       </div>
-      <div v-if="account.countdown !== null" class="timer">{{account.countdown}}s</div>
+      <div v-if="account.countdown !== null" class="timer">{{ account.countdown }}s</div>
     </li>
     <li class="empty" v-if="accounts.length === 0">暂无账户~</li>
   </ul>
-  <form v-else class="login" @submit.prevent="onSubmit">
+  <form v-else class="login">
     <p>请输入密码进行访问:</p>
     <input type="password" v-focus v-model="password" autocomplete="off" required>
   </form>
@@ -18,22 +18,32 @@
 </template>
 
 <script lang="ts" setup>
-import {ref} from 'vue'
+import {ref, computed, watch, nextTick} from 'vue'
 import {genCode} from '@/utils/totp'
 import vFocus from '@/directives/vFocus'
 import {Account, AccountInStorage} from '@/index'
+import {useSettingStore} from '@/stores/SettingStore'
+import {useAccountStore} from '@/stores/AccountStore'
 
-const enabled = ref(false)
 const password = ref('')
-const accounts = ref<Account[]>([])
 
-function onSubmit() {
-  if (password.value === '123456') {
-    enable()
-  } else {
-    alert('密码不正确')
+const settingStore = useSettingStore()
+settingStore.init()
+
+const enabled = computed(() => {
+  return !settingStore.enableProtect || settingStore.password === password.value
+})
+watch(enabled, (value) => {
+  if (value) {
+    nextTick(() => {
+      enable()
+    })
   }
-}
+}, {
+  immediate: true
+})
+
+const accounts = ref<Account[]>([])
 
 function countdown() {
   return 30 - Math.floor(Date.now() / 1000 % 30)
@@ -57,15 +67,15 @@ function refreshCode() {
   })
 }
 
+const accountStore = useAccountStore()
+
+
 /**
  * 启用
  */
 async function enable() {
-  if (enabled.value) return
-  enabled.value = true
-
-  const data = await chrome.storage.sync.get('accounts')
-  accounts.value = (data.accounts || []).map((a: AccountInStorage) => ({
+  await accountStore.init()
+  accounts.value = accountStore.accounts.map((a: AccountInStorage) => ({
     code: '',
     countdown: 0,
     ...a,
@@ -93,11 +103,13 @@ h1 {
   text-align: center;
   margin-bottom: 30px;
 }
+
 @font-face {
   font-family: 'Space';
   src: local('Times New Roman');
   unicode-range: U+20;
 }
+
 .item {
   display: flex;
   align-items: flex-end;
@@ -109,10 +121,12 @@ h1 {
     font-size: 18px;
     margin-bottom: 10px;
   }
+
   .code {
     font-size: 34px;
     font-family: Space, Monaco, serif;
   }
+
   .timer {
     font-size: 24px;
   }
@@ -124,12 +138,14 @@ h1 {
     }
   }
 }
+
 .empty {
   display: flex;
   justify-content: center;
   text-align: center;
   font-size: 18px;
 }
+
 button.add {
   position: fixed;
   top: 15px;
@@ -152,11 +168,13 @@ button.add {
     transform: rotateZ(45deg);
   }
 }
+
 .login {
   p {
     font-size: 18px;
     margin-bottom: 10px;
   }
+
   input {
     font-size: 24px;
     padding: 3px 8px;
