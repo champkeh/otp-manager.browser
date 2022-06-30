@@ -1,6 +1,6 @@
-# Authenticator
+# OTP-Manager
 
-> 运行在 Chrome 插件平台的 Authenticator。
+> 运行在 Chrome 插件平台的 OTP 管理器。
 
 ## Usage
 

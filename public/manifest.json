@@ -1,11 +1,11 @@
 {
-  "name": "authenticator",
+  "name": "OTP Manager",
   "manifest_version": 3,
   "version": "1.0",
-  "description": "Authenticator",
+  "description": "运行在 Chrome 插件平台的 OTP 管理器",
   "action": {
     "default_popup": "/src/popup/entry.html",
-    "default_title": "运行在 Chrome 插件平台的 Authenticator",
+    "default_title": "OTP Manager",
     "default_icon": {
       "16": "icons/icon.png",
       "24": "icons/icon.png",
