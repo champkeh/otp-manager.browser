@@ -1,10 +1,14 @@
 <template>
-  <h1>Authenticator</h1>
+  <h1>OTP Manager</h1>
   <ul v-if="enabled">
     <li class="item" :class="{warning: account.countdown <= 3}" v-for="account in accounts" :key="account.id">
       <div>
         <p class="account">{{ account.name }}</p>
-        <p class="code">{{ account.code }}</p>
+        <p>
+          <span class="code">{{ account.code }}</span>
+          <i v-if="account.copy" class="icon pointer ml10 ri-clipboard-fill" @click="copy(account)"></i>
+          <i v-else class="icon green ml10 ri-check-fill"></i>
+        </p>
       </div>
       <div v-if="account.countdown !== null" class="timer">{{ account.countdown }}s</div>
     </li>
@@ -14,7 +18,9 @@
     <p>请输入密码进行访问:</p>
     <input type="password" v-focus v-model="password" autocomplete="off" required>
   </form>
-  <button v-if="enabled" class="add" @click="gotoOptionsPage">+</button>
+  <button v-if="enabled" class="setting" @click="gotoOptionsPage">
+    <i class="icon pointer ri-settings-5-fill"></i>
+  </button>
 </template>
 
 <script lang="ts" setup>
@@ -24,6 +30,7 @@ import vFocus from '@/directives/vFocus'
 import {Account, AccountInStorage} from '@/index'
 import {useSettingStore} from '@/stores/SettingStore'
 import {useAccountStore} from '@/stores/AccountStore'
+import {copy2Clipboard} from '@/utils/copy'
 
 const password = ref('')
 
@@ -78,6 +85,7 @@ async function enable() {
   accounts.value = accountStore.accounts.map((a: AccountInStorage) => ({
     code: '',
     countdown: 0,
+    copy: true,
     ...a,
   }))
 
@@ -96,6 +104,14 @@ async function enable() {
 function gotoOptionsPage() {
   window.location.href = chrome.runtime.getURL('/src/options/entry.html')
 }
+
+function copy(account: Account) {
+  copy2Clipboard(account.code.replace(/\s/g, ''))
+  account.copy = false
+  setTimeout(() => {
+    account.copy = true
+  }, 1000)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -103,7 +119,18 @@ h1 {
   text-align: center;
   margin-bottom: 30px;
 }
-
+i.icon {
+  font-size: 20px;
+}
+.ml10 {
+  margin-left: 10px;
+}
+.pointer {
+  cursor: pointer;
+}
+.green {
+  color: green;
+}
 @font-face {
   font-family: 'Space';
   src: local('Times New Roman');
@@ -146,26 +173,20 @@ h1 {
   font-size: 18px;
 }
 
-button.add {
+button.setting {
   position: fixed;
   top: 15px;
   right: 20px;
-  display: block;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  cursor: pointer;
   font-size: 20px;
-  line-height: 30px;
-  transition: all .3s;
-  color: black;
-  background-color: #eaeaea;
-
+  transition: all .5s;
+  display: inline-flex;
+  background-color: transparent;
   &:hover {
-    color: white;
-    background-color: blueviolet;
-    box-shadow: 0 0 20px 5px #eaeaea;
     transform: rotateZ(45deg);
+  }
+
+  i {
+    font-size: 24px;
   }
 }
 

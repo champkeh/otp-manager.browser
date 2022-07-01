@@ -4,6 +4,7 @@ export interface Account {
     secret: string
     code: string
     countdown: number
+    copy: boolean
 }
 
 export type AccountType = 'totp' | 'hotp'

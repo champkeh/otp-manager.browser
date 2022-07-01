@@ -10,6 +10,7 @@ specifiers:
   axios: ^0.27.2
   jsqr: ^1.4.0
   pinia: ^2.0.14
+  remixicon: ^2.5.0
   sass: ^1.53.0
   typescript: ^4.5.4
   uuid: ^8.3.2
@@ -21,6 +22,7 @@ dependencies:
   axios: 0.27.2
   jsqr: 1.4.0
   pinia: 2.0.14_j6bzmzd4ujpabbp5objtwxyjp4
+  remixicon: 2.5.0
   uuid: 8.3.2
   vue: 3.2.37
 
@@ -636,6 +638,10 @@ packages:
     dependencies:
       picomatch: 2.3.1
     dev: true
+
+  /remixicon/2.5.0:
+    resolution: {integrity: sha512-q54ra2QutYDZpuSnFjmeagmEiN9IMo56/zz5dDNitzKD23oFRw77cWo4TsrAdmdkPiEn8mxlrTqxnkujDbEGww==}
+    dev: false
 
   /resolve/1.22.1:
     resolution: {integrity: sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==}
