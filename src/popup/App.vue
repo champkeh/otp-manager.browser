@@ -178,7 +178,7 @@ button.setting {
   top: 15px;
   right: 20px;
   font-size: 20px;
-  transition: all .5s;
+  transition: all .3s;
   display: inline-flex;
   background-color: transparent;
   &:hover {

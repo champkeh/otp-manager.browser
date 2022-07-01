@@ -1,7 +1,7 @@
 {
   "name": "OTP Manager",
   "manifest_version": 3,
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "运行在 Chrome 插件平台的 OTP 管理器",
   "action": {
     "default_popup": "/src/popup/entry.html",

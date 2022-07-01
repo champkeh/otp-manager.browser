@@ -1,13 +1,17 @@
 <template>
-<h2>其他设置</h2>
+  <h2>其他设置</h2>
   <form @submit.prevent="save">
-    <p class="flex-row">
+    <div class="flex-row">
       <label>
         <input type="checkbox" v-model="enableProtect">
         密码保护
       </label>
-      <input v-show="enableProtect" v-model="password" type="password" placeholder="请输入密码">
-    </p>
+      <div v-show="enableProtect" class="input-wrapper">
+        <input v-model="password" :type="passwordType" placeholder="请输入密码">
+        <i v-if="passwordType === 'password'" class="icon pointer ri-eye-line" @click="passwordType = 'text'"></i>
+        <i v-else class="icon pointer ri-eye-close-line" @click="passwordType = 'password'"></i>
+      </div>
+    </div>
     <div class="flex-center">
       <button class="btn">保存设置</button>
     </div>
@@ -15,8 +19,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useSettingStore } from '@/stores/SettingStore'
-import { useStorePropAsModel } from '@/utils/useStoreProp'
+import {ref} from "vue"
+import {useSettingStore} from '@/stores/SettingStore'
+import {useStorePropAsModel} from '@/utils/useStoreProp'
 
 const settingStore = useSettingStore()
 settingStore.init()
@@ -24,11 +29,15 @@ settingStore.init()
 const enableProtect = useStorePropAsModel(settingStore, 'enableProtect')
 const password = useStorePropAsModel(settingStore, 'password')
 
+
+
 function save() {
   settingStore.sync().then(() => {
     alert('保存成功')
   })
 }
+
+const passwordType = ref('password')
 </script>
 
 <style lang="scss" scoped>
@@ -38,25 +47,50 @@ h2 {
   font-size: 24px;
   margin-top: 30px;
 }
+
 form {
   label {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    margin-right: 20px;
+    input[type=checkbox] {
+      margin-right: 5px;
+    }
+  }
+
+  .input-wrapper {
+    position: relative;
+    width: 200px;
+  }
+  input[type=text],
+  input[type=password] {
+    width: 100%;
     font-size: 18px;
   }
-  input[type=password] {
-    font-size: 18px;
-    margin-left: 20px;
+  .icon {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    font-size: 16px;
   }
 }
+.pointer {
+  cursor: pointer;
+}
+
 .flex-center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .flex-row {
   display: flex;
   height: 40px;
   align-items: center;
 }
+
 button.btn {
   margin: 30px auto;
   padding: 10px 20px;
