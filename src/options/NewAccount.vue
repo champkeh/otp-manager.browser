@@ -104,20 +104,28 @@ function loadQRCode() {
  */
 function fetchQRCode() {
   loading.value = true
-  download(url.value).then(file => {
-    const reader = new FileReader()
-    reader.onloadend = (evt) => {
-      decodeQrCodeLocal(evt.target!.result as string).then(parseSchema).then(res => {
-        if (res) {
-          name.value = res.account
-          secret.value = res.secret!
-          type.value = res.type
+  let dataURLPromise: Promise<string>
+  if (/data:image\/(png|jpeg);base64,.+/.test(url.value)) {
+    dataURLPromise = Promise.resolve(url.value)
+  } else {
+    dataURLPromise = new Promise((resolve, reject) => {
+      download(url.value).then(file => {
+        const reader = new FileReader()
+        reader.onloadend = (evt) => {
+          resolve(evt.target!.result as string)
         }
-      }).catch(e => {
-        alert(e.message)
+        reader.readAsDataURL(file)
       })
+    })
+  }
+  dataURLPromise.then(decodeQrCodeLocal).then(parseSchema).then(res => {
+    if (res) {
+      name.value = res.account
+      secret.value = res.secret!
+      type.value = res.type
     }
-    reader.readAsDataURL(file)
+  }).catch(e => {
+    alert(e.message)
   }).finally(() => {
     loading.value = false
   })
