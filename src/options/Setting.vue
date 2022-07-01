@@ -21,14 +21,13 @@
 <script lang="ts" setup>
 import {ref} from "vue"
 import {useSettingStore} from '@/stores/SettingStore'
-import {useStorePropAsModel} from '@/utils/useStoreProp'
+import {useStoreProp} from '@/utils/useStoreProp'
 
 const settingStore = useSettingStore()
 settingStore.init()
 
-const enableProtect = useStorePropAsModel(settingStore, 'enableProtect')
-const password = useStorePropAsModel(settingStore, 'password')
-
+const enableProtect = useStoreProp(settingStore, 'enableProtect')
+const password = useStoreProp(settingStore, 'password')
 
 
 function save() {
@@ -54,6 +53,7 @@ form {
     align-items: center;
     font-size: 18px;
     margin-right: 20px;
+
     input[type=checkbox] {
       margin-right: 5px;
     }
@@ -63,11 +63,13 @@ form {
     position: relative;
     width: 200px;
   }
+
   input[type=text],
   input[type=password] {
     width: 100%;
     font-size: 18px;
   }
+
   .icon {
     position: absolute;
     right: 10px;
@@ -75,6 +77,7 @@ form {
     font-size: 16px;
   }
 }
+
 .pointer {
   cursor: pointer;
 }
