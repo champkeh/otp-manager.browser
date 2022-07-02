@@ -102,7 +102,7 @@ async function enable() {
 }
 
 function gotoOptionsPage() {
-  window.location.href = chrome.runtime.getURL('/src/options/entry.html')
+  window.location.href = chrome.runtime.getURL('/options.html')
 }
 
 function copy(account: Account) {

@@ -1,13 +1,13 @@
 <template>
   <h2>其他设置</h2>
-  <form @submit.prevent="save">
+  <form @submit.prevent>
     <div class="flex-row">
       <label>
-        <input type="checkbox" v-model="enableProtect">
+        <input type="checkbox" v-model="settingStore.enableProtect">
         开启密码保护
       </label>
-      <div v-show="enableProtect" class="input-wrapper">
-        <input v-model="password" :type="passwordType" placeholder="请输入密码">
+      <div v-show="settingStore.enableProtect" class="input-wrapper">
+        <input v-model="settingStore.password" :type="passwordType" placeholder="请输入密码">
         <i v-if="passwordType === 'password'" class="icon pointer ri-eye-line" @click="passwordType = 'text'"></i>
         <i v-else class="icon pointer ri-eye-close-line" @click="passwordType = 'password'"></i>
       </div>
@@ -16,28 +16,11 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, watch, watchEffect} from "vue"
+import {ref} from "vue"
 import {useSettingStore} from '@/stores/SettingStore'
-import {useStoreProp} from '@/utils/useStoreProp'
 
 const settingStore = useSettingStore()
 settingStore.init()
-
-const enableProtect = useStoreProp(settingStore, 'enableProtect')
-const password = useStoreProp(settingStore, 'password')
-
-watch(enableProtect, () => {
-  settingStore.sync()
-})
-watch(password, () => {
-  settingStore.sync()
-})
-
-// function save() {
-//   settingStore.sync().then(() => {
-//     alert('保存成功')
-//   })
-// }
 
 const passwordType = ref('password')
 </script>

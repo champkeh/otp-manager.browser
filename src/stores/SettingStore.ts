@@ -3,12 +3,13 @@ import {toRaw} from "vue";
 
 interface SettingStoreState {
     enableProtect: boolean
-    password?: string
+    password: string
 }
 
 export const useSettingStore = defineStore('SettingStore', {
     state: (): SettingStoreState => ({
-        enableProtect: false
+        enableProtect: false,
+        password: ''
     }),
     actions: {
         async init() {
@@ -16,8 +17,13 @@ export const useSettingStore = defineStore('SettingStore', {
             const setting = data.setting || {enableProtect: false, password: ''}
             this.enableProtect = setting.enableProtect
             this.password = setting.password
+
+            // 自动同步保存的storage
+            this.$subscribe((mutation, state) => {
+                this.sync()
+            })
         },
-        async update(enableProtect: boolean, password: string) {
+        async update(enableProtect: boolean, password: string = '') {
             this.enableProtect = enableProtect
             this.password = password
             await this.sync()

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "运行在 Chrome 插件平台的 OTP 管理器",
   "action": {
-    "default_popup": "/src/popup/entry.html",
+    "default_popup": "popup.html",
     "default_title": "OTP Manager",
     "default_icon": {
       "16": "icons/icon.png",
@@ -17,10 +17,13 @@
     "24": "icons/icon.png",
     "128": "icons/icon.png"
   },
-  "options_page": "/src/options/entry.html",
+  "options_page": "options.html",
   "permissions": [
     "storage"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "host_permissions": [
     "https://*/"
   ]

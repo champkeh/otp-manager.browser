@@ -19,6 +19,7 @@ export const useAccountStore = defineStore('AccountStore', {
         async init() {
             const data = await chrome.storage.sync.get('accounts')
             this.accounts = data.accounts || []
+            await chrome.action.setBadgeText({text: this.accounts.length.toString()})
         },
         async add(name: string, secret: string, type: AccountType) {
             try {
@@ -41,6 +42,7 @@ export const useAccountStore = defineStore('AccountStore', {
         },
         async sync() {
             await chrome.storage.sync.set({accounts: toRaw(this.accounts)})
+            await chrome.action.setBadgeText({text: this.accounts.length.toString()})
         },
         exportAccount() {
             const file = new Blob([JSON.stringify(toRaw(this.accounts))], {type: 'application/json'})
