@@ -4,7 +4,7 @@
     <div class="flex-row">
       <label>
         <input type="checkbox" v-model="enableProtect">
-        密码保护
+        开启密码保护
       </label>
       <div v-show="enableProtect" class="input-wrapper">
         <input v-model="password" :type="passwordType" placeholder="请输入密码">
@@ -12,14 +12,11 @@
         <i v-else class="icon pointer ri-eye-close-line" @click="passwordType = 'password'"></i>
       </div>
     </div>
-    <div class="flex-center">
-      <button class="btn">保存设置</button>
-    </div>
   </form>
 </template>
 
 <script lang="ts" setup>
-import {ref} from "vue"
+import {ref, watch, watchEffect} from "vue"
 import {useSettingStore} from '@/stores/SettingStore'
 import {useStoreProp} from '@/utils/useStoreProp'
 
@@ -29,12 +26,18 @@ settingStore.init()
 const enableProtect = useStoreProp(settingStore, 'enableProtect')
 const password = useStoreProp(settingStore, 'password')
 
+watch(enableProtect, () => {
+  settingStore.sync()
+})
+watch(password, () => {
+  settingStore.sync()
+})
 
-function save() {
-  settingStore.sync().then(() => {
-    alert('保存成功')
-  })
-}
+// function save() {
+//   settingStore.sync().then(() => {
+//     alert('保存成功')
+//   })
+// }
 
 const passwordType = ref('password')
 </script>
@@ -87,6 +90,9 @@ form {
   justify-content: center;
   align-items: center;
 }
+.flex-start {
+  display: flex;
+}
 
 .flex-row {
   display: flex;
@@ -95,7 +101,7 @@ form {
 }
 
 button.btn {
-  margin: 30px auto;
+  margin: 10px 20px;
   padding: 10px 20px;
   background-color: #eaeaea;
   color: blueviolet;
@@ -103,6 +109,13 @@ button.btn {
   font-size: 18px;
   border: 1px solid transparent;
   transition: all .3s;
+
+  &:first-child {
+    margin-left: 0;
+  }
+  &:last-child {
+    margin-right: 0;
+  }
 
   &:focus {
     border: 1px solid -webkit-focus-ring-color;

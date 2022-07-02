@@ -3,7 +3,7 @@
   <form @submit.prevent="onAdd">
     <p class="flex-row">
       <label for="account">账户:</label>
-      <input class="flex-1" id="account" type="text" v-focus v-model="name" placeholder="请输入账号" required
+      <input class="flex-1" id="account" type="text" v-focus v-model="name" placeholder="请输入账户名" required
              autocomplete="off">
     </p>
     <p class="flex-row">
@@ -23,7 +23,7 @@
   <div class="divider"><span>OR</span></div>
   <form @submit.prevent="fetchQRCode">
     <p class="flex-row">
-      <input class="flex-1" id="qrcode" type="url" v-select v-model="url" placeholder="请输入在线二维码地址" required autocomplete="off">
+      <input class="flex-1" id="qrcode" type="url" v-select v-model="url" placeholder="请输入二维码图片地址（支持DataURL）" required autocomplete="off">
       <button class="btn" :disabled="loading">提取在线二维码</button>
       <button class="btn" @click.prevent="loadQRCode">本地二维码</button>
     </p>
@@ -38,6 +38,7 @@ import {ref} from "vue"
 import {AccountType} from "@/index"
 import {decodeQrCodeLocal, parseSchema} from '@/utils/qrcode'
 import {download} from '@/utils/http'
+import {readFileContent} from '@/utils/file'
 
 const accountStore = useAccountStore()
 
@@ -67,36 +68,18 @@ let fileEl: HTMLInputElement | null = null
 /**
  * 加载本地二维码
  */
-function loadQRCode() {
-  if (!fileEl) {
-    fileEl = document.createElement('input')
-    fileEl.type = 'file'
-    fileEl.accept = 'image/*'
-    fileEl.style.visibility = 'hidden'
-    fileEl.style.width = '0'
-    fileEl.style.height = '0'
-    document.body.appendChild(fileEl)
-    fileEl.addEventListener('change', (event) => {
-      const file = (event.target as HTMLInputElement).files![0]
-      if (file) {
-        const reader = new FileReader()
-        reader.onloadend = (evt) => {
-          decodeQrCodeLocal(evt.target!.result as string).then(parseSchema).then(res => {
-            if (res) {
-              name.value = res.account
-              secret.value = res.secret!
-              type.value = res.type
-            }
-          }).catch(e => {
-            alert(e.message)
-          })
-        }
-        reader.readAsDataURL(file)
-      }
-    })
+async function loadQRCode() {
+  try {
+    const dataURL = await readFileContent('image/*', 'DataURL')
+    const schema = await decodeQrCodeLocal(dataURL as string).then(parseSchema)
+    if (schema) {
+      name.value = schema.account
+      secret.value = schema.secret!
+      type.value = schema.type
+    }
+  } catch (e: any) {
+    alert(e.message)
   }
-
-  fileEl.click()
 }
 
 /**
