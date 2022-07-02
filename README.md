@@ -23,9 +23,11 @@ npm run bundle:prod
 ### 效果展示
 
 一、主界面
+
 ![popup page](docs/assets/popup.png)
 
 二、配置界面
+
 ![options page](docs/assets/options.png)
 
 ## License
