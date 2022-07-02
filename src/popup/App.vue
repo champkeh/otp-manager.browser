@@ -1,13 +1,17 @@
 <template>
   <h1>OTP Manager</h1>
   <ul v-if="enabled">
-    <li class="item" :class="{warning: account.countdown <= 3}" v-for="account in accounts" :key="account.id">
+    <li class="item" :class="{warning: account.countdown <= 4}" v-for="account in accounts" :key="account.id">
       <div>
         <p class="account">{{ account.name }}</p>
         <p>
           <span class="code">{{ account.code }}</span>
-          <i v-if="account.copy" class="icon pointer ml10 ri-clipboard-fill" @click="copy(account)"></i>
-          <i v-else class="icon green ml10 ri-check-fill"></i>
+
+          <!--小于3秒的时候不可拷贝-->
+          <template v-if="account.countdown > 3">
+            <i v-if="account.copy" class="icon pointer ml10 ri-clipboard-fill" @click="copy(account)"></i>
+            <i v-else class="icon green ml10 ri-check-fill"></i>
+          </template>
         </p>
       </div>
       <div v-if="account.countdown !== null" class="timer">{{ account.countdown }}s</div>
@@ -161,7 +165,10 @@ i.icon {
   &.warning {
     .code {
       color: red;
-      transition: color .3s;
+      animation-duration: 1s;
+      animation-delay: 0.5s;
+      animation-name: blink;
+      animation-iteration-count: infinite;
     }
   }
 }
@@ -199,6 +206,18 @@ button.setting {
   input {
     font-size: 24px;
     padding: 3px 8px;
+  }
+}
+
+@keyframes blink {
+  30% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  80% {
+    opacity: 1;
   }
 }
 </style>
