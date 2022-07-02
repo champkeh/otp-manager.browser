@@ -56,7 +56,7 @@ export const useAccountStore = defineStore('AccountStore', {
                         this.accounts.push(account)
                         count++
                     } else {
-                        console.warn(account.id, '已存在')
+                        console.warn(`${account.id}已存在`)
                     }
                 })
                 await this.sync()
