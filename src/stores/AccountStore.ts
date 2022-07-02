@@ -4,6 +4,7 @@ import {AccountInStorage, AccountType} from '@/index'
 import {genCode} from "@/utils/totp"
 import {v4 as uuid} from "uuid"
 import {downloadBlob, readFileContent} from "@/utils/file"
+import moment from "moment"
 
 interface AccountStoreState {
     accounts: AccountInStorage[]
@@ -46,7 +47,7 @@ export const useAccountStore = defineStore('AccountStore', {
         },
         exportAccount() {
             const file = new Blob([JSON.stringify(toRaw(this.accounts))], {type: 'application/json'})
-            downloadBlob(file, `otp-manager-${Date.now()}.json`)
+            downloadBlob(file, `otp-manager-${moment().format('YYYY-MM-DDTHH_mm_ss_SSS')}.json`)
         },
         async importAccount() {
             try {
