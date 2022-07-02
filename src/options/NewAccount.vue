@@ -23,7 +23,7 @@
   <div class="divider"><span>OR</span></div>
   <form @submit.prevent="fetchQRCode">
     <p class="flex-row">
-      <input class="flex-1" id="qrcode" type="url" v-select v-model="url" placeholder="请输入二维码图片地址（支持DataURL）" required autocomplete="off">
+      <input class="flex-1 font-sm" id="qrcode" type="url" v-select v-model="url" placeholder="二维码图片地址 (支持DataURL)" required autocomplete="off">
       <button class="btn" :disabled="loading">提取在线二维码</button>
       <button class="btn" @click.prevent="loadQRCode">本地二维码</button>
     </p>
@@ -129,7 +129,7 @@ label {
 }
 
 input {
-  font-size: 18px;
+  font-size: 16px;
   padding: 10px;
 }
 
@@ -143,7 +143,9 @@ input {
 .flex-1 {
   flex: 1;
 }
-
+.font-sm {
+  font-size: 14px;
+}
 form {
   margin-top: 20px;
 }
