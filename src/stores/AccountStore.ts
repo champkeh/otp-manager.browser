@@ -61,7 +61,9 @@ export const useAccountStore = defineStore('AccountStore', {
                 })
                 await this.sync()
                 if (count > 0) {
-                    alert(`成功导入 ${count} 条数据`)
+                    setTimeout(() => {
+                        alert(`成功导入 ${count} 条数据`)
+                    }, 100)
                 }
             } catch (e: any) {
                 alert(e.message)
