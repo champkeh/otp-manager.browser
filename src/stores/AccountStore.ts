@@ -5,6 +5,7 @@ import {genCode} from "@/utils/totp"
 import {v4 as uuid} from "uuid"
 import {downloadBlob, readFileContent} from "@/utils/file"
 import moment from "moment"
+import {useSettingStore} from '@/stores/SettingStore'
 
 interface AccountStoreState {
     accounts: AccountInStorage[]
@@ -36,6 +37,10 @@ export const useAccountStore = defineStore('AccountStore', {
                 type: type,
             })
             await this.sync()
+
+            // 更新最新账户添加时间
+            const settingStore = useSettingStore()
+            settingStore.latestAccountDate = Date.now()
         },
         async remove(id: string) {
             this.accounts = this.accounts.filter(account => account.id !== id)
@@ -45,9 +50,15 @@ export const useAccountStore = defineStore('AccountStore', {
             await chrome.storage.sync.set({accounts: toRaw(this.accounts)})
             await chrome.action.setBadgeText({text: this.accounts.length.toString()})
         },
-        exportAccount() {
+        async exportAccount() {
             const file = new Blob([JSON.stringify(toRaw(this.accounts))], {type: 'application/json'})
             downloadBlob(file, `otp-manager-${moment().format('YYYY-MM-DDTHH_mm_ss_SSS')}.json`)
+
+            // 更新最后导出时间
+            const settingStore = useSettingStore()
+            settingStore.lastExportDate = Date.now()
+            // 恢复badge颜色
+            await chrome.action.setBadgeBackgroundColor({color: [0,0,0,0]})
         },
         async importAccount() {
             try {
