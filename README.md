@@ -18,6 +18,7 @@ npm run bundle:prod
 ![usage](docs/assets/usage_1.png)
 
 插件位于项目下的`dist`目录：
+
 ![usage](docs/assets/usage_2.png)
 
 ### 效果展示
