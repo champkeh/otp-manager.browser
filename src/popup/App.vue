@@ -3,7 +3,7 @@
   <ul v-if="enabled">
     <li class="item" :class="{warning: account.countdown <= 4}" v-for="account in accounts" :key="account.id">
       <div>
-        <p class="account">{{ account.name }}</p>
+        <p class="account">{{ account.name }} ({{account.group}})</p>
         <p>
           <span class="code">{{ account.code }}</span>
 

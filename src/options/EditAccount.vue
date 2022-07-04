@@ -8,7 +8,7 @@
     </p>
     <p class="flex-row">
       <label for="secret">密钥:</label>
-      <input class="flex-1" id="secret" type="text" v-model="secret" placeholder="请输入密钥" required
+      <input class="flex-1" id="secret" type="text" :value="secret" disabled placeholder="请输入密钥" required
              autocomplete="off">
     </p>
     <p class="flex-row">
@@ -17,7 +17,7 @@
              autocomplete="off">
     </p>
     <div class="flex-row">
-      <select v-model="type">
+      <select :value="type" disabled>
         <option value="totp">基于时间</option>
         <option value="hotp">基于计数器</option>
       </select>
