@@ -10,6 +10,10 @@
       <label for="secret">密钥:</label>
       <input class="flex-1" id="secret" type="text" v-model="secret" placeholder="请输入密钥" required autocomplete="off">
     </p>
+    <p class="flex-row">
+      <label for="group">分组:</label>
+      <input class="flex-1" id="group" type="text" v-model="group" placeholder="请输入分组名" required autocomplete="off">
+    </p>
     <div class="flex-row">
       <select v-model="type">
         <option value="totp">基于时间</option>
@@ -44,6 +48,7 @@ const accountStore = useAccountStore()
 
 const name = ref('')
 const secret = ref('')
+const group = ref('')
 const type = ref<AccountType>('totp')
 const url = ref('')
 
@@ -53,9 +58,10 @@ const loading = ref(false)
  * 新增账户
  */
 async function onAdd() {
-  accountStore.add(name.value, secret.value, type.value).then(() => {
+  accountStore.add(name.value, secret.value, group.value, type.value).then(() => {
     name.value = ''
     secret.value = ''
+    group.value = ''
     type.value = 'totp'
   }).catch(e => {
     alert(e.message)

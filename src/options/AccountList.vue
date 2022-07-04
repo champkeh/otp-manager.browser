@@ -1,16 +1,23 @@
 <template>
   <h2>账户列表</h2>
   <ul>
-    <li v-for="account in accountStore.accounts" :key="account.id">
-      <div class="account">
-        {{ account.name }}
-        <button class="text" @click="onRemove(account)">删除</button>
-      </div>
+    <li class="group" v-for="(group, key) in accountStore.accountGroup" :key="key">
+      {{key}}({{group.length}})
+      <ul>
+        <li v-for="account in group" :key="account.id">
+          <div class="account">
+            {{account.name}}
+            <button class="text" @click="onEdit(account)">编辑</button>
+            <button class="text" @click="onRemove(account)">删除</button>
+          </div>
+        </li>
+      </ul>
     </li>
   </ul>
   <div class="flex-start">
     <button class="btn" @click="accountStore.importAccount()">导入</button>
     <button class="btn" @click="accountStore.exportAccount()" :disabled="accountStore.accounts.length === 0">导出</button>
+    <button class="btn" @click="onAdd">添加</button>
   </div>
 </template>
 
@@ -19,7 +26,9 @@ import {useAccountStore} from '@/stores/AccountStore'
 import {AccountInStorage} from "@/index";
 
 const accountStore = useAccountStore()
-accountStore.init()
+accountStore.init().then(() => {
+console.log(accountStore.accountGroup)
+})
 
 /**
  * 删除账户
@@ -34,6 +43,19 @@ async function onRemove(account: AccountInStorage) {
     }, 0)
   }
 }
+
+/**
+ * 编辑账户
+ * @param account
+ */
+async function onEdit(account: AccountInStorage) {
+  accountStore.mode = 'edit'
+  accountStore.current = account
+}
+
+function onAdd() {
+  accountStore.mode = 'add'
+}
 </script>
 
 <style lang="scss" scoped>
@@ -42,12 +64,20 @@ h2 {
   margin-bottom: 30px;
   font-size: 24px;
 }
+
 ul {
   font-size: 18px;
 }
+li > ul {
+  padding-left: 50px;
+}
+.group {
+  margin: 20px 0;
+}
+
 .account {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   height: 30px;
 
   &:hover {
@@ -56,6 +86,7 @@ ul {
     }
   }
 }
+
 button.text {
   display: none;
   color: blueviolet;
@@ -76,6 +107,7 @@ button.btn {
   &:first-child {
     margin-left: 0;
   }
+
   &:last-child {
     margin-right: 0;
   }
@@ -84,6 +116,7 @@ button.btn {
     cursor: not-allowed;
     opacity: 0.5;
   }
+
   &:not([disabled]):focus {
     border: 1px solid -webkit-focus-ring-color;
   }

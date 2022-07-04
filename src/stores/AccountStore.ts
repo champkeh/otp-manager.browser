@@ -6,15 +6,28 @@ import {v4 as uuid} from "uuid"
 import {downloadBlob, readFileContent} from "@/utils/file"
 import moment from "moment"
 import {useSettingStore} from '@/stores/SettingStore'
+// @ts-ignore
+import _ from 'lodash'
+// @ts-ignore
+import {Dictionary} from 'lodash'
 
 interface AccountStoreState {
     accounts: AccountInStorage[]
+    mode: 'add' | 'edit' | 'none'
+    current: AccountInStorage | null
 }
 
 export const useAccountStore = defineStore('AccountStore', {
     state(): AccountStoreState {
         return {
-            accounts: []
+            accounts: [],
+            mode: 'none',
+            current: null
+        }
+    },
+    getters: {
+        accountGroup(): Dictionary<AccountInStorage[]> {
+            return _.groupBy(this.accounts, 'group')
         }
     },
     actions: {
@@ -23,7 +36,7 @@ export const useAccountStore = defineStore('AccountStore', {
             this.accounts = data.accounts || []
             await chrome.action.setBadgeText({text: this.accounts.length.toString()})
         },
-        async add(name: string, secret: string, type: AccountType) {
+        async add(name: string, secret: string, group: string, type: AccountType) {
             try {
                 genCode(secret)
             } catch (e) {
@@ -34,6 +47,7 @@ export const useAccountStore = defineStore('AccountStore', {
                 id: uuid(),
                 name: name,
                 secret: secret,
+                group: group,
                 type: type,
             })
             await this.sync()
@@ -44,6 +58,17 @@ export const useAccountStore = defineStore('AccountStore', {
         },
         async remove(id: string) {
             this.accounts = this.accounts.filter(account => account.id !== id)
+            await this.sync()
+        },
+        async update(account: AccountInStorage) {
+            const target = this.accounts.find(a => a.id === account.id)
+            if (!target) {
+                throw new Error('更新账户出错，找不到目标账户')
+            }
+            target.type = account.type
+            target.group = account.group
+            target.secret = account.secret
+            target.name = account.name
             await this.sync()
         },
         async sync() {

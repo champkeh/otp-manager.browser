@@ -4,11 +4,13 @@ patchedDependencies: {}
 
 specifiers:
   '@types/chrome': ^0.0.191
+  '@types/lodash': ^4.14.182
   '@types/node': ^18.0.0
   '@types/uuid': ^8.3.4
   '@vitejs/plugin-vue': ^2.3.3
   axios: ^0.27.2
   jsqr: ^1.4.0
+  lodash: ^4.17.21
   moment: ^2.29.3
   npm-run-all: ^4.1.5
   pinia: ^2.0.14
@@ -24,6 +26,7 @@ specifiers:
 dependencies:
   axios: 0.27.2
   jsqr: 1.4.0
+  lodash: 4.17.21
   moment: 2.29.3
   pinia: 2.0.14_j6bzmzd4ujpabbp5objtwxyjp4
   remixicon: 2.5.0
@@ -32,6 +35,7 @@ dependencies:
 
 devDependencies:
   '@types/chrome': 0.0.191
+  '@types/lodash': 4.14.182
   '@types/node': 18.0.0
   '@types/uuid': 8.3.4
   '@vitejs/plugin-vue': 2.3.3_vite@2.9.13+vue@3.2.37
@@ -81,6 +85,10 @@ packages:
 
   /@types/har-format/1.2.8:
     resolution: {integrity: sha512-OP6L9VuZNdskgNN3zFQQ54ceYD8OLq5IbqO4VK91ORLfOm7WdT/CiT/pHEBSQEqCInJ2y3O6iCm/zGtPElpgJQ==}
+    dev: true
+
+  /@types/lodash/4.14.182:
+    resolution: {integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==}
     dev: true
 
   /@types/node/18.0.0:
@@ -924,6 +932,10 @@ packages:
       pify: 3.0.0
       strip-bom: 3.0.0
     dev: true
+
+  /lodash/4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+    dev: false
 
   /magic-string/0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
