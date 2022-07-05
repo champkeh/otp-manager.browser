@@ -17,3 +17,6 @@ input {
     padding: 20px 30px;
     margin: 0 auto;
 }
+body::-webkit-scrollbar {
+    display: none;
+}

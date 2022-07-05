@@ -1,21 +1,7 @@
 <template>
   <h1>OTP Manager</h1>
   <ul v-if="enabled">
-    <li class="item" :class="{warning: account.countdown <= 4}" v-for="account in accounts" :key="account.id">
-      <div>
-        <p class="account">{{ account.name }} ({{account.group}})</p>
-        <p>
-          <span class="code">{{ account.code }}</span>
-
-          <!--小于3秒的时候不可拷贝-->
-          <template v-if="account.countdown > 3">
-            <i v-if="account.copy" class="icon pointer ml10 ri-clipboard-fill" @click="copy(account)"></i>
-            <i v-else class="icon green ml10 ri-check-fill"></i>
-          </template>
-        </p>
-      </div>
-      <div v-if="account.countdown !== null" class="timer">{{ account.countdown }}s</div>
-    </li>
+    <AccountItem v-for="account in accounts" :key="account.id" :account="account" />
     <li class="empty" v-if="accounts.length === 0">暂无账户~</li>
   </ul>
   <form v-else class="login">
@@ -34,7 +20,7 @@ import vFocus from '@/directives/vFocus'
 import {Account, AccountInStorage} from '@/index'
 import {useSettingStore} from '@/stores/SettingStore'
 import {useAccountStore} from '@/stores/AccountStore'
-import {copy2Clipboard} from '@/utils/copy'
+import AccountItem from "@/popup/AccountItem.vue"
 
 const password = ref('')
 
@@ -91,7 +77,7 @@ async function enable() {
     countdown: 0,
     copy: true,
     ...a,
-  }))
+  })).sort((a, b) => a.group > b.group ? 1 : -1)
 
   refreshCode()
   setInterval(() => {
@@ -109,68 +95,12 @@ function gotoOptionsPage() {
   window.location.href = chrome.runtime.getURL('/options.html')
 }
 
-function copy(account: Account) {
-  copy2Clipboard(account.code.replace(/\s/g, ''))
-  account.copy = false
-  setTimeout(() => {
-    account.copy = true
-  }, 1000)
-}
 </script>
 
 <style lang="scss" scoped>
 h1 {
   text-align: center;
   margin-bottom: 30px;
-}
-i.icon {
-  font-size: 20px;
-}
-.ml10 {
-  margin-left: 10px;
-}
-.pointer {
-  cursor: pointer;
-}
-.green {
-  color: green;
-}
-@font-face {
-  font-family: 'Space';
-  src: local('Times New Roman');
-  unicode-range: U+20;
-}
-
-.item {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  border-bottom: 1px solid #eaeaea;
-  margin-bottom: 30px;
-
-  .account {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-
-  .code {
-    font-size: 34px;
-    font-family: Space, Monaco, serif;
-  }
-
-  .timer {
-    font-size: 24px;
-  }
-
-  &.warning {
-    .code {
-      color: red;
-      animation-duration: 1s;
-      animation-delay: 0.5s;
-      animation-name: blink;
-      animation-iteration-count: infinite;
-    }
-  }
 }
 
 .empty {
@@ -206,18 +136,6 @@ button.setting {
   input {
     font-size: 24px;
     padding: 3px 8px;
-  }
-}
-
-@keyframes blink {
-  30% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.3;
-  }
-  80% {
-    opacity: 1;
   }
 }
 </style>
